@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Configuration
 public class GitHubSsoFilter {
+	/*
 	@Bean
 	@ConfigurationProperties("github.client")
 	public AuthorizationCodeResourceDetails github() {
@@ -43,5 +44,5 @@ public class GitHubSsoFilter {
 		githubFilter.setTokenServices(tokenServices);
 		return githubFilter;
 	}
-
+*/
 }

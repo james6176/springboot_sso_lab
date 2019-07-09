@@ -23,24 +23,33 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @SpringBootApplication
 @EnableOAuth2Client
+@EnableAuthorizationServer
 public class SocialApplication extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private GitHubSsoFilter gitHubSsoFilter;
+	
+	@Autowired
+	private NewGitHubSsoFilter newGitHubSsoFilter;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// @formatter:off
-		http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**", "/error**").permitAll()
-				.anyRequest().authenticated().and().logout().logoutSuccessUrl("/").permitAll().and().csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-				.addFilterBefore(gitHubSsoFilter.ssoFilter(), BasicAuthenticationFilter.class);
+		http.antMatcher("/**").authorizeRequests().
+				antMatchers("/", "/login**", "/webjars/**", "/error**").permitAll()
+				.anyRequest().authenticated()
+				.and().exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
+				.and().logout().logoutSuccessUrl("/").permitAll()
+				.and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.and().addFilterBefore(newGitHubSsoFilter.ssoFilter(), BasicAuthenticationFilter.class);
 		// @formatter:on
 	}
 
