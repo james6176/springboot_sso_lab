@@ -20,6 +20,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
@@ -32,6 +33,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @SpringBootApplication
 @EnableOAuth2Client
 @EnableAuthorizationServer
+@Order(200)
 public class SocialApplication extends WebSecurityConfigurerAdapter {
 
 	@Autowired
